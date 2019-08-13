@@ -13,6 +13,7 @@ $(document).ready(function () {
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
+    var database = firebase.database();
     var trains = firebase.database().ref("/trains");
 
     function formValidation() {
@@ -99,7 +100,7 @@ $(document).ready(function () {
         var trainFrequency = parseInt(newMember.frequency);
         var newRowElem = $("<tr>");
         var newRemoveElem = $("<td>");
-        var newRemoveButton = $("<button class=\"btn btn-sm btn-danger\">")
+        var newRemoveButton = $("<button class=\"btn btn-sm btn-danger remove\">")
         var newTrainElem = $("<td>");
         var newDestinationElem = $("<td>");
         var newFrequencyElem = $("<td>");
@@ -115,6 +116,7 @@ $(document).ready(function () {
         newArrivalElem.text(nextArrival);
         newMinutesAwayElem.text(minutesAway);
         newRemoveButton.text("Remove");
+        newRemoveButton.attr("data-key",snapshot.key);
 
         $(newRowElem).append(newTrainElem);
         $(newRowElem).append(newDestinationElem);
@@ -127,5 +129,9 @@ $(document).ready(function () {
     })
 
     $("#submit").on("click", addTrain);
+    $("table").on("click", ".remove", function () {
+        database.ref("/trains/" + $(this).attr("data-key")).remove();
+        $(this).parents().eq(1).remove()
+    })
 
 })
