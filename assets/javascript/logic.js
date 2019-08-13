@@ -52,7 +52,6 @@ $(document).ready(function () {
             $("#frequency").removeClass("inputError");
         }
 
-
         if (!Number.isInteger(parseInt(newFrequency))) {
             alert("You need to enter an integer number for frequency");
             $("#frequency").addClass("inputError");
@@ -60,12 +59,13 @@ $(document).ready(function () {
         }
         $("#frequency").removeClass("inputError");
 
-        if (!/(^1\d:[0-5]\d$)|(^2[0-3]:[0-5]\d$)/.test(newFirstTime)) {
+        if (!/(^[0-1]\d:[0-5]\d$)|(^2[0-3]:[0-5]\d$)/.test(newFirstTime)) {
             alert("You need a properly formatted military time (i.e. 21:00).");
             $("#firstTrain").addClass("inputError");
             return false
         }
         $("#firstTrain").removeClass("inputError");
+        return true
     }
 
     function addTrain() {
@@ -90,7 +90,6 @@ $(document).ready(function () {
         $("#destination").val("");
         $("#firstTrain").val("");
         $("#frequency").val("");
-
     }
 
     trains.orderByChild("dateAdded").on("child_added", function (snapshot) {
@@ -99,6 +98,8 @@ $(document).ready(function () {
         var firstTime = moment(newMember.firstTime, momentFormat);
         var trainFrequency = parseInt(newMember.frequency);
         var newRowElem = $("<tr>");
+        var newRemoveElem = $("<td>");
+        var newRemoveButton = $("<button class=\"btn btn-sm btn-danger\">")
         var newTrainElem = $("<td>");
         var newDestinationElem = $("<td>");
         var newFrequencyElem = $("<td>");
@@ -113,12 +114,15 @@ $(document).ready(function () {
         newFrequencyElem.text(newMember.frequency);
         newArrivalElem.text(nextArrival);
         newMinutesAwayElem.text(minutesAway);
+        newRemoveButton.text("Remove");
 
         $(newRowElem).append(newTrainElem);
         $(newRowElem).append(newDestinationElem);
         $(newRowElem).append(newFrequencyElem);
         $(newRowElem).append(newArrivalElem);
         $(newRowElem).append(newMinutesAwayElem);
+        $(newRemoveElem).append(newRemoveButton);
+        $(newRowElem).append(newRemoveElem);
         $("#trainSchedule").append(newRowElem);
     })
 
